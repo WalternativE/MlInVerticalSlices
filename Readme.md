@@ -7,10 +7,10 @@ for the ML.NET Community Conference 2021.
 
 To run the code you will need
 
-- VS Code Insiders
+- VS Code
 - .NET Interactive Extension
 - Ionide Extension
-- .NET SDK 5.0.x
+- .NET SDK 5.0.x (pinned in `global.json`)
 
 ## Run the artifacts
 
