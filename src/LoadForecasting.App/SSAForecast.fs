@@ -19,27 +19,29 @@ module SSAForecast =
 
         let mlContext = context.GetService<MLContext>()
 
+        // Why isn't there a Time Series Prediction Engine Pool?
+        // See: https://github.com/dotnet/machinelearning-samples/issues/739#issuecomment-552004422
         // ========================================================================================================
         // BEWARE: this is an extremely dirty hack - never do this ever
         // I'd rather go and open a ticket with dotnet/machinelearning to add a timesereis forecasting engine pool
         let poolBuilder =
           context.GetService<PredictionEnginePoolBuilder<AlternativeForecastInput, AlternativeLoadForecast>>()
 
-        let tp = poolBuilder.GetType()
-        let assmbl = Reflection.Assembly.GetAssembly(tp)
+        let poolBuilderType = poolBuilder.GetType()
+        let poolBuilderAssembly = Reflection.Assembly.GetAssembly(poolBuilderType)
 
-        let tgtp =
-          assmbl.GetType("Microsoft.Extensions.ML.UriModelLoader")
+        let modelLoaderType =
+          poolBuilderAssembly.GetType("Microsoft.Extensions.ML.UriModelLoader")
 
         let modelLoader : ModelLoader =
           poolBuilder
             .Services
             .BuildServiceProvider()
-            .GetService(tgtp)
+            .GetService(modelLoaderType)
           :?> ModelLoader
 
         let startMethod =
-          tgtp.GetMethod(
+          modelLoaderType.GetMethod(
             "Start",
             Reflection.BindingFlags.NonPublic
             ||| Reflection.BindingFlags.Public
@@ -73,7 +75,6 @@ module SSAForecast =
                    Forecast = fc.Forecast |> Array.skip hoursSinceOffset
                    LowerBound = fc.LowerBound |> Array.skip hoursSinceOffset
                    UpperBound = fc.UpperBound |> Array.skip hoursSinceOffset }
-
 
         return! Successful.OK forecast next context
       }

@@ -16,10 +16,10 @@ module Global =
   [<Literal>]
   let tickOffset = 35064
 
+  // first timestamp after the training set
   let dateTimeOffset = DateTime.Parse("2018-12-31T23:00:00")
 
   type ForecastRequest = { From: DateTime; Horizon: int }
-
 
   let hoursSinceOffset (from: DateTime) =
     (DateTimeOffset(from)
