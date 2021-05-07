@@ -24,8 +24,7 @@ let webApp =
   choose [ GET
            >=> choose [ route "/" >=> text "Yeah, I'm running." ]
            POST
-           >=> choose [ route "/linear-forecast"
-                        >=> linearPredictionHandler
+           >=> choose [ route "/linear-forecast" >=> linearPredictionHandler
                         route "/ssa-forecast" >=> ssaPredictionhandler ]
            setStatusCode 404 >=> text "Not Found" ]
 
